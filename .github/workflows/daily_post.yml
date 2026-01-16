@@ -1,0 +1,29 @@
+name: Daily VK Post
+
+on:
+  schedule:
+    # Запуск каждый день в 06:00 по UTC (это 09:00 по МСК)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Позволяет запускать вручную для проверки
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run script
+        env:
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
+          GROUP_ID: ${{ secrets.GROUP_ID }}
+        run: python main.py
