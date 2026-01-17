@@ -1,0 +1,10 @@
+МОЖНО: Торговаться на старых рынках (Souk).|https://images.unsplash.com/photo-1512453979798-5ea266f8880c
+НЕЛЬЗЯ: Фотографировать государственные здания.|https://images.unsplash.com/photo-1518684079-3c830dcef090
+МОЖНО: Пить бутилированную воду.|https://images.unsplash.com/photo-1523362628744-0c1dfa61084a
+НЕЛЬЗЯ: Жестикулировать агрессивно на дорогах.|https://images.unsplash.com/photo-1541443131876-bb5adda00d33
+МОЖНО: Использовать бесплатный Wi-Fi в моллах.|https://images.unsplash.com/photo-1518455027359-f3f816b1a238
+НЕЛЬЗЯ: Пить алкоголь в общественных местах.|https://images.unsplash.com/photo-1560523160-754a9e25c68f
+МОЖНО: Оставлять чаевые 10-15%.|https://images.unsplash.com/photo-1559339352-11d035aa65de
+НЕЛЬЗЯ: Переходить дорогу в неположенном месте.|https://images.unsplash.com/photo-1549487351-069324d52c6d
+МОЖНО: Посещать фонтаны бесплатно.|https://images.unsplash.com/photo-1533633045617-640a3f851086
+НЕЛЬЗЯ: Заходить мужчинам в женский вагон метро.|https://images.unsplash.com/photo-1517479149777-5f3b1511d5ad
