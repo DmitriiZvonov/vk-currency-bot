@@ -2,12 +2,11 @@ name: VK Group Content Plan
 
 on:
   schedule:
-    - cron: '0 6 * * *'  # Каждый день в 09:00 МСК (для курса)
-    - cron: '0 15 1-31/2 * *' # В 18:00 МСК через день (по нечетным числам)
-  workflow_dispatch: # Чтобы можно было запустить вручную
+    - cron: '0 6 * * *'  # Утро (09:00 МСК)
+    - cron: '0 15 1-31/2 * *' # Вечер через день (18:00 МСК)
+  workflow_dispatch:
 
 jobs:
-  # ЗАДАЧА 1: КУРС ВАЛЮТ (каждый день)
   currency_post:
     if: github.event.schedule == '0 6 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -21,16 +20,19 @@ jobs:
           VK_TOKEN: ${{ secrets.VK_TOKEN }}
           GROUP_ID: ${{ secrets.GROUP_ID }}
 
-  # ЗАДАЧА 2: ПРАВИЛА (через день)
   rules_post:
     if: github.event.schedule == '0 15 1-31/2 * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Явное разрешение на запись в репозиторий
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Git # Это нужно, чтобы бот мог сохранить файл с использованными правилами
+        with:
+          persist-credentials: true # Чтобы GitHub запомнил права для Push
+      - name: Set up Git
         run: |
-          git config --global user.name "Bot"
-          git config --global user.email "bot@example.com"
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
       - uses: actions/setup-python@v4
         with: {python-version: '3.9'}
       - run: pip install -r requirements.txt
@@ -38,8 +40,8 @@ jobs:
         env:
           VK_TOKEN: ${{ secrets.VK_TOKEN }}
           GROUP_ID: ${{ secrets.GROUP_ID }}
-      - name: Save used rules # Сохраняем "память" бота обратно в GitHub
+      - name: Save changes
         run: |
           git add used_rules.txt
-          git commit -m "Update used rules" || echo "No changes"
+          git commit -m "Update history" || echo "No changes"
           git push
