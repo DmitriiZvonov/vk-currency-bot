@@ -1,29 +1,45 @@
-name: Daily VK Post
+name: VK Group Content Plan
 
 on:
   schedule:
-    # Запуск каждый день в 06:00 по UTC (это 09:00 по МСК)
-    - cron: '0 6 * * *'
-  workflow_dispatch: # Позволяет запускать вручную для проверки
+    - cron: '0 6 * * *'  # Каждый день в 09:00 МСК (для курса)
+    - cron: '0 15 1-31/2 * *' # В 18:00 МСК через день (по нечетным числам)
+  workflow_dispatch: # Чтобы можно было запустить вручную
 
 jobs:
-  build:
+  # ЗАДАЧА 1: КУРС ВАЛЮТ (каждый день)
+  currency_post:
+    if: github.event.schedule == '0 6 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Run script
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with: {python-version: '3.9'}
+      - run: pip install -r requirements.txt
+      - run: python main.py
         env:
           VK_TOKEN: ${{ secrets.VK_TOKEN }}
           GROUP_ID: ${{ secrets.GROUP_ID }}
-        run: python main.py
+
+  # ЗАДАЧА 2: ПРАВИЛА (через день)
+  rules_post:
+    if: github.event.schedule == '0 15 1-31/2 * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Git # Это нужно, чтобы бот мог сохранить файл с использованными правилами
+        run: |
+          git config --global user.name "Bot"
+          git config --global user.email "bot@example.com"
+      - uses: actions/setup-python@v4
+        with: {python-version: '3.9'}
+      - run: pip install -r requirements.txt
+      - run: python rules_bot.py
+        env:
+          VK_TOKEN: ${{ secrets.VK_TOKEN }}
+          GROUP_ID: ${{ secrets.GROUP_ID }}
+      - name: Save used rules # Сохраняем "память" бота обратно в GitHub
+        run: |
+          git add used_rules.txt
+          git commit -m "Update used rules" || echo "No changes"
+          git push
